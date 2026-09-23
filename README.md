@@ -132,14 +132,3 @@ El mismo esquema se utiliza para los demás recursos.
 ```
 
 La API evita vender dos veces la misma butaca para una misma función y verifica que la butaca pertenezca a la sala donde se proyecta la función.
-
-## Subir a GitHub
-
-```bash
-git init
-git add .
-git commit -m "Primer práctico Django REST - Cine API"
-git branch -M main
-git remote add origin URL_DE_TU_REPOSITORIO
-git push -u origin main
-```
