@@ -3,12 +3,16 @@ from rest_framework import serializers
 from .models import Butaca, Entrada, Funcion, Pelicula, Sala
 
 
+# -------------------- PELÍCULAS --------------------
+
 class PeliculaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pelicula
         fields = "__all__"
         read_only_fields = ["id"]
 
+
+# -------------------- SALAS --------------------
 
 class SalaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,6 +21,8 @@ class SalaSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
 
+# -------------------- BUTACAS --------------------
+
 class ButacaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Butaca
@@ -24,12 +30,40 @@ class ButacaSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
 
+# -------------------- FUNCIONES --------------------
+
+class FuncionPublicSerializer(serializers.ModelSerializer):
+    pelicula = PeliculaSerializer(read_only=True)
+    sala = SalaSerializer(read_only=True)
+
+    class Meta:
+        model = Funcion
+        fields = [
+            "id",
+            "fecha",
+            "horario",
+            "precio",
+            "pelicula",
+            "sala",
+        ]
+        read_only_fields = ["id"]
+
+
 class FuncionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Funcion
-        fields = "__all__"
+        fields = [
+            "id",
+            "fecha",
+            "horario",
+            "precio",
+            "pelicula",
+            "sala",
+        ]
         read_only_fields = ["id"]
 
+
+# -------------------- ENTRADAS --------------------
 
 class EntradaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -49,4 +83,5 @@ class EntradaSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "La butaca seleccionada no pertenece a la sala de esta función."
             )
+
         return data
