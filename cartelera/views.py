@@ -1,4 +1,5 @@
-from rest_framework import generics
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import Butaca, Entrada, Funcion, Pelicula, Sala
 from .serializers import (
@@ -13,57 +14,39 @@ from .serializers import (
 
 # -------------------- PELÍCULAS --------------------
 
-class PeliculasListCreateAPIView(generics.ListCreateAPIView):
+class PeliculaViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Pelicula.objects.all()
     serializer_class = PeliculaSerializer
-
-
-class PeliculasDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Pelicula.objects.all()
-    serializer_class = PeliculaSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 # -------------------- SALAS --------------------
 
-class SalasListCreateAPIView(generics.ListCreateAPIView):
+class SalaViewSet(viewsets.ModelViewSet):
     queryset = Sala.objects.all()
     serializer_class = SalaSerializer
-
-
-class SalasDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Sala.objects.all()
-    serializer_class = SalaSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 # -------------------- BUTACAS --------------------
 
-class ButacasListCreateAPIView(generics.ListCreateAPIView):
+class ButacaViewSet(viewsets.ModelViewSet):
     queryset = Butaca.objects.all().select_related("sala")
     serializer_class = ButacaSerializer
-
-
-class ButacasDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Butaca.objects.all().select_related("sala")
-    serializer_class = ButacaSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 # -------------------- FUNCIONES --------------------
 
-class FuncionesListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Funcion.objects.all().select_related("pelicula", "sala")
+class FuncionViewSet(viewsets.ModelViewSet):
+    queryset = Funcion.objects.all().select_related(
+        "pelicula",
+        "sala",
+    )
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_serializer_class(self):
-        if self.request.method == "GET":
-            return FuncionPublicSerializer
-        else:
-            return FuncionSerializer
-
-
-class FuncionesDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Funcion.objects.all().select_related("pelicula", "sala")
-
-    def get_serializer_class(self):
-        if self.request.method == "GET":
+        if self.action in ["list", "retrieve"]:
             return FuncionPublicSerializer
         else:
             return FuncionSerializer
@@ -71,19 +54,11 @@ class FuncionesDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 # -------------------- ENTRADAS --------------------
 
-class EntradasListCreateAPIView(generics.ListCreateAPIView):
+class EntradaViewSet(viewsets.ModelViewSet):
     queryset = Entrada.objects.all().select_related(
         "funcion",
         "funcion__pelicula",
         "butaca",
     )
     serializer_class = EntradaSerializer
-
-
-class EntradasDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Entrada.objects.all().select_related(
-        "funcion",
-        "funcion__pelicula",
-        "butaca",
-    )
-    serializer_class = EntradaSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
