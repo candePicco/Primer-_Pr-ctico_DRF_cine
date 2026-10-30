@@ -1,5 +1,5 @@
 # Cine API - Práctico Django REST Framework
-RAMIREZ PI
+RAMIREZ PICCO
 
 API REST para administrar la cartelera de un cine.
 
